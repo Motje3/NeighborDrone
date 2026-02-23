@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -17,39 +17,6 @@ const SPRING_CONFIG = {
   mass: 0.5,
 };
 
-function AnimatedTabIcon({
-  name,
-  color,
-  focused,
-}: {
-  name: IconName;
-  color: string;
-  focused: boolean;
-}) {
-  const scale = useSharedValue(1);
-  const translateY = useSharedValue(0);
-
-  React.useEffect(() => {
-    if (focused) {
-      scale.value = withSpring(1.25, SPRING_CONFIG);
-      translateY.value = withSpring(-3, SPRING_CONFIG);
-    } else {
-      scale.value = withSpring(1, SPRING_CONFIG);
-      translateY.value = withSpring(0, SPRING_CONFIG);
-    }
-  }, [focused]);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }, { translateY: translateY.value }],
-  }));
-
-  return (
-    <Animated.View style={animatedStyle}>
-      <Ionicons name={name} size={24} color={color} />
-    </Animated.View>
-  );
-}
-
 function TabIcon({
   name,
   color,
@@ -59,9 +26,32 @@ function TabIcon({
   color: string;
   focused: boolean;
 }) {
+  const scale = useSharedValue(1);
+
+  React.useEffect(() => {
+    scale.value = withSpring(focused ? 1.15 : 1, SPRING_CONFIG);
+  }, [focused]);
+
+  const animStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
+
   return (
-    <View style={{ alignItems: 'center' }}>
-      <AnimatedTabIcon name={name} color={color} focused={focused} />
+    <View style={{ alignItems: 'center', justifyContent: 'center', width: 48, height: 40 }}>
+      {focused && (
+        <View
+          style={{
+            position: 'absolute',
+            width: 48,
+            height: 40,
+            borderRadius: 20,
+            backgroundColor: 'rgba(46, 134, 222, 0.12)',
+          }}
+        />
+      )}
+      <Animated.View style={animStyle}>
+        <Ionicons name={name} size={23} color={color} />
+      </Animated.View>
     </View>
   );
 }
