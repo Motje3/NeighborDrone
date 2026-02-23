@@ -2,14 +2,14 @@ import { View, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-export default function MapScreen() {
+export default function InfoScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <MaterialIcons name="map" size={64} color="#2E86DE" />
-        <Text style={styles.title}>Drone Kaart</Text>
+        <MaterialIcons name="info" size={64} color="#2E86DE" />
+        <Text style={styles.title}>Informatie</Text>
         <Text style={styles.subtitle}>
-          Hier ziet u straks de drones in uw buurt
+          Leer meer over hulpverlening drones en hoe ze levens redden
         </Text>
       </View>
     </SafeAreaView>
