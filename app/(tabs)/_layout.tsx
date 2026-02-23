@@ -1,16 +1,15 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   withSpring,
   useSharedValue,
-  withTiming,
 } from 'react-native-reanimated';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { ComponentProps } from 'react';
 
-type IconName = ComponentProps<typeof MaterialIcons>['name'];
+type IconName = ComponentProps<typeof Ionicons>['name'];
 
 const SPRING_CONFIG = {
   damping: 15,
@@ -32,8 +31,8 @@ function AnimatedTabIcon({
 
   React.useEffect(() => {
     if (focused) {
-      scale.value = withSpring(1.2, SPRING_CONFIG);
-      translateY.value = withSpring(-2, SPRING_CONFIG);
+      scale.value = withSpring(1.25, SPRING_CONFIG);
+      translateY.value = withSpring(-3, SPRING_CONFIG);
     } else {
       scale.value = withSpring(1, SPRING_CONFIG);
       translateY.value = withSpring(0, SPRING_CONFIG);
@@ -46,42 +45,8 @@ function AnimatedTabIcon({
 
   return (
     <Animated.View style={animatedStyle}>
-      <MaterialIcons name={name} size={26} color={color} />
+      <Ionicons name={name} size={24} color={color} />
     </Animated.View>
-  );
-}
-
-function ActiveIndicator({ focused }: { focused: boolean }) {
-  const opacity = useSharedValue(0);
-  const width = useSharedValue(0);
-
-  React.useEffect(() => {
-    if (focused) {
-      opacity.value = withTiming(1, { duration: 200 });
-      width.value = withSpring(24, SPRING_CONFIG);
-    } else {
-      opacity.value = withTiming(0, { duration: 150 });
-      width.value = withSpring(0, SPRING_CONFIG);
-    }
-  }, [focused]);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    opacity: opacity.value,
-    width: width.value,
-  }));
-
-  return (
-    <Animated.View
-      style={[
-        {
-          height: 3,
-          borderRadius: 2,
-          backgroundColor: '#2E86DE',
-          marginTop: 4,
-        },
-        animatedStyle,
-      ]}
-    />
   );
 }
 
@@ -97,7 +62,6 @@ function TabIcon({
   return (
     <View style={{ alignItems: 'center' }}>
       <AnimatedTabIcon name={name} color={color} focused={focused} />
-      <ActiveIndicator focused={focused} />
     </View>
   );
 }
@@ -110,23 +74,28 @@ export default function TabLayout() {
         tabBarInactiveTintColor: '#A0AEC0',
         headerShown: false,
         tabBarStyle: {
+          position: 'absolute',
+          bottom: 20,
+          marginHorizontal: 16,
           backgroundColor: '#FFFFFF',
           borderTopWidth: 0,
+          borderRadius: 28,
           elevation: 20,
           shadowColor: '#000',
-          shadowOffset: { width: 0, height: -4 },
-          shadowOpacity: 0.1,
-          shadowRadius: 12,
-          height: 70,
-          paddingBottom: 10,
+          shadowOffset: { width: 0, height: 8 },
+          shadowOpacity: 0.15,
+          shadowRadius: 16,
+          height: 68,
+          paddingBottom: 8,
           paddingTop: 8,
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
+        },
+        sceneStyle: {
+          backgroundColor: '#F7FAFC',
         },
         tabBarLabelStyle: {
-          fontSize: 11,
+          fontSize: 10,
           fontWeight: '600',
-          marginTop: 2,
+          marginTop: 0,
         },
       }}
     >
@@ -135,7 +104,7 @@ export default function TabLayout() {
         options={{
           title: 'Kaart',
           tabBarIcon: ({ color, focused }) => (
-            <TabIcon name="map" color={color} focused={focused} />
+            <TabIcon name={focused ? 'map' : 'map-outline'} color={color} focused={focused} />
           ),
         }}
       />
@@ -144,7 +113,7 @@ export default function TabLayout() {
         options={{
           title: 'Info',
           tabBarIcon: ({ color, focused }) => (
-            <TabIcon name="info" color={color} focused={focused} />
+            <TabIcon name={focused ? 'information-circle' : 'information-circle-outline'} color={color} focused={focused} />
           ),
         }}
       />
@@ -153,7 +122,7 @@ export default function TabLayout() {
         options={{
           title: 'Chat',
           tabBarIcon: ({ color, focused }) => (
-            <TabIcon name="chat" color={color} focused={focused} />
+            <TabIcon name={focused ? 'chatbubble-ellipses' : 'chatbubble-ellipses-outline'} color={color} focused={focused} />
           ),
         }}
       />
@@ -162,7 +131,7 @@ export default function TabLayout() {
         options={{
           title: 'Melden',
           tabBarIcon: ({ color, focused }) => (
-            <TabIcon name="report" color={color} focused={focused} />
+            <TabIcon name={focused ? 'warning' : 'warning-outline'} color={color} focused={focused} />
           ),
         }}
       />
@@ -171,7 +140,7 @@ export default function TabLayout() {
         options={{
           title: 'Alerts',
           tabBarIcon: ({ color, focused }) => (
-            <TabIcon name="notifications" color={color} focused={focused} />
+            <TabIcon name={focused ? 'notifications' : 'notifications-outline'} color={color} focused={focused} />
           ),
         }}
       />
