@@ -2,7 +2,6 @@ import React, { useRef, useState } from 'react';
 import {
   View, StyleSheet, TouchableOpacity, Animated,
   Text, Pressable, ScrollView,
-  Image as RNImage,
 } from 'react-native';
 import MapView, { Marker, Polyline } from 'react-native-maps';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -163,13 +162,10 @@ export default function MapScreen() {
               coordinate={drone.from}
               onPress={() => openSheet(drone)}
               anchor={{ x: 0.5, y: 0.5 }}
-              style={{ width: 60, height: 60 }}
             >
-              <RNImage
-                source={require('../../public/mapdrone.png')}
-                style={styles.droneIcon}
-                resizeMode="contain"
-              />
+              <View style={[styles.destOuter, { borderColor: drone.color }]}>
+                <View style={[styles.destInner, { backgroundColor: drone.color }]} />
+              </View>
             </Marker>
 
             {/* Destination marker */}
@@ -287,11 +283,6 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   map: { flex: 1 },
 
-  // Drone marker icon
-  droneIcon: {
-    width: 60,
-    height: 60,
-  },
 
   // Destination marker
   destOuter: {
