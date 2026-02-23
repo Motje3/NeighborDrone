@@ -224,17 +224,17 @@ const styles = StyleSheet.create({
     borderBottomColor: '#EDF2F7',
   },
   headerIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     backgroundColor: '#EBF4FF',
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
   },
   headerDroneImg: {
-    width: 44,
-    height: 44,
+    width: 52,
+    height: 52,
   },
   headerText: {
     marginLeft: 14,
@@ -278,9 +278,9 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   avatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     backgroundColor: '#EBF4FF',
     justifyContent: 'center',
     alignItems: 'center',
@@ -288,8 +288,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   avatarImg: {
-    width: 26,
-    height: 26,
+    width: 42,
+    height: 42,
   },
   bubble: {
     maxWidth: '75%',

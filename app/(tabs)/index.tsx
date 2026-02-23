@@ -154,8 +154,8 @@ export default function MapScreen() {
             <Polyline
               coordinates={[drone.from, drone.to]}
               strokeColor={drone.color}
-              strokeWidth={2.5}
-              lineDashPattern={[12, 8]}
+              strokeWidth={4}
+              lineDashPattern={[14, 10]}
             />
 
             {/* Drone marker — current position */}
@@ -294,18 +294,18 @@ const styles = StyleSheet.create({
 
   // Destination marker
   destOuter: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    borderWidth: 2.5,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderWidth: 3,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
   },
   destInner: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
   },
 
   // Floating buttons
