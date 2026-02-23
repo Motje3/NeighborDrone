@@ -1,7 +1,8 @@
 import React, { useRef, useState } from 'react';
 import {
   View, StyleSheet, TouchableOpacity, Animated,
-  Text, Pressable,
+  Text, Pressable, ScrollView,
+  Image as RNImage,
 } from 'react-native';
 import MapView, { Marker, Polyline } from 'react-native-maps';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -38,6 +39,7 @@ interface DroneData {
   to: { name: string; latitude: number; longitude: number };
   mission: string;
   altitude: string;
+  betekenis: string;
 }
 
 const DRONES: DroneData[] = [
@@ -50,6 +52,7 @@ const DRONES: DroneData[] = [
     to: { name: 'Rotterdam Centraal', latitude: 51.9249, longitude: 4.4690 },
     mission: 'Verkenning na brandmelding',
     altitude: '80m',
+    betekenis: 'Deze drone helpt de brandweer bij het in kaart brengen van een brandmelding. U hoeft zich geen zorgen te maken — het is een veiligheidsmaatregel.',
   },
   {
     id: 'DR-02',
@@ -60,6 +63,7 @@ const DRONES: DroneData[] = [
     to: { name: 'Alexandrium', latitude: 51.9373, longitude: 4.5300 },
     mission: 'Medische hulpverlening',
     altitude: '60m',
+    betekenis: 'Deze drone vervoert medische benodigdheden naar een noodsituatie. Het kan zijn dat u hem ziet overvliegen — dit is normaal en veilig.',
   },
   {
     id: 'DR-03',
@@ -70,6 +74,7 @@ const DRONES: DroneData[] = [
     to: { name: 'De Kuip', latitude: 51.8936, longitude: 4.5230 },
     mission: 'Verkeersmonitoring',
     altitude: '100m',
+    betekenis: 'Deze drone houdt het verkeer in de gaten bij een groot evenement. Hij vliegt hoog en vormt geen gevaar voor u.',
   },
   {
     id: 'DR-04',
@@ -80,6 +85,7 @@ const DRONES: DroneData[] = [
     to: { name: 'Rotterdam Airport', latitude: 51.9557, longitude: 4.4377 },
     mission: 'Spoedinterventie',
     altitude: '120m',
+    betekenis: 'Deze drone keert terug na een spoedinterventie. De missie is afgerond en de drone landt binnenkort weer op de basis.',
   },
 ];
 
@@ -158,10 +164,10 @@ export default function MapScreen() {
               onPress={() => openSheet(drone)}
               anchor={{ x: 0.5, y: 0.5 }}
             >
-              <Image
+              <RNImage
                 source={require('../../public/mapdrone.png')}
                 style={styles.droneIcon}
-                contentFit="contain"
+                resizeMode="contain"
               />
             </Marker>
 
@@ -217,57 +223,58 @@ export default function MapScreen() {
               <View style={styles.sheetTitleRow}>
                 <View style={[styles.colorDot, { backgroundColor: selectedDrone.color }]} />
                 <Text style={styles.sheetTitle}>{selectedDrone.name}</Text>
+                <View style={[styles.statusBadge, { backgroundColor: STATUS_COLORS[selectedDrone.status] + '20' }]}>
+                  <View style={[styles.statusDot, { backgroundColor: STATUS_COLORS[selectedDrone.status] }]} />
+                  <Text style={[styles.statusText, { color: STATUS_COLORS[selectedDrone.status] }]}>
+                    {selectedDrone.status}
+                  </Text>
+                </View>
               </View>
               <TouchableOpacity onPress={closeSheet} hitSlop={12}>
                 <Ionicons name="close" size={22} color="#718096" />
               </TouchableOpacity>
             </View>
 
-            {/* Status badge */}
-            <View style={[styles.statusBadge, { backgroundColor: STATUS_COLORS[selectedDrone.status] + '20' }]}>
-              <View style={[styles.statusDot, { backgroundColor: STATUS_COLORS[selectedDrone.status] }]} />
-              <Text style={[styles.statusText, { color: STATUS_COLORS[selectedDrone.status] }]}>
-                {selectedDrone.status}
-              </Text>
-            </View>
-
-            {/* Route */}
-            <View style={styles.routeCard}>
-              <View style={styles.routeRow}>
-                <View style={[styles.routeIconCircle, { backgroundColor: selectedDrone.color + '20' }]}>
-                  <Ionicons name="radio-button-on" size={16} color={selectedDrone.color} />
+            <ScrollView showsVerticalScrollIndicator={false} style={styles.sheetScroll}>
+              {/* Route — compact */}
+              <View style={styles.routeCard}>
+                <View style={styles.routeCompact}>
+                  <Ionicons name="radio-button-on" size={14} color={selectedDrone.color} />
+                  <Text style={styles.routeFrom}>{selectedDrone.from.name}</Text>
+                  <Ionicons name="arrow-forward" size={14} color="#A0AEC0" />
+                  <Ionicons name="location" size={14} color={selectedDrone.color} />
+                  <Text style={styles.routeTo}>{selectedDrone.to.name}</Text>
                 </View>
-                <View>
-                  <Text style={styles.routeLabel}>Vertrek</Text>
-                  <Text style={styles.routeLocation}>{selectedDrone.from.name}</Text>
-                </View>
-              </View>
-
-              <View style={[styles.routeConnector, { borderColor: selectedDrone.color + '50' }]} />
-
-              <View style={styles.routeRow}>
-                <View style={[styles.routeIconCircle, { backgroundColor: selectedDrone.color + '20' }]}>
-                  <Ionicons name="location" size={16} color={selectedDrone.color} />
-                </View>
-                <View>
-                  <Text style={styles.routeLabel}>Bestemming</Text>
-                  <Text style={styles.routeLocation}>{selectedDrone.to.name}</Text>
+                <View style={styles.detailChips}>
+                  <View style={styles.chip}>
+                    <Ionicons name="clipboard-outline" size={13} color="#718096" />
+                    <Text style={styles.chipText}>{selectedDrone.mission}</Text>
+                  </View>
+                  <View style={styles.chip}>
+                    <Ionicons name="trending-up-outline" size={13} color="#718096" />
+                    <Text style={styles.chipText}>{selectedDrone.altitude} hoogte</Text>
+                  </View>
                 </View>
               </View>
-            </View>
 
-            {/* Details */}
-            <View style={styles.detailsRow}>
-              <View style={styles.detailItem}>
-                <Ionicons name="clipboard-outline" size={15} color="#718096" />
-                <Text style={styles.detailText}>{selectedDrone.mission}</Text>
+              {/* Wat betekent dit voor jou */}
+              <View style={styles.betekenisCard}>
+                <View style={styles.betekenisRow}>
+                  <View style={styles.betekenisContent}>
+                    <View style={styles.betekenisHeader}>
+                      <Ionicons name="information-circle" size={18} color={selectedDrone.color} />
+                      <Text style={styles.betekenisTitle}>Wat betekent dit voor jou?</Text>
+                    </View>
+                    <Text style={styles.betekenisText}>{selectedDrone.betekenis}</Text>
+                  </View>
+                  <Image
+                    source={require('../../public/cutedrone.png')}
+                    style={styles.cuteDrone}
+                    contentFit="contain"
+                  />
+                </View>
               </View>
-              <View style={styles.detailDivider} />
-              <View style={styles.detailItem}>
-                <Ionicons name="trending-up-outline" size={15} color="#718096" />
-                <Text style={styles.detailText}>{selectedDrone.altitude} hoogte</Text>
-              </View>
-            </View>
+            </ScrollView>
           </>
         )}
       </Animated.View>
@@ -281,8 +288,8 @@ const styles = StyleSheet.create({
 
   // Drone marker icon
   droneIcon: {
-    width: 44,
-    height: 44,
+    width: 40,
+    height: 40,
   },
 
   // Destination marker
@@ -374,6 +381,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 12,
   },
+  cuteDrone: {
+    width: 70,
+    height: 70,
+  },
+  betekenisRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  betekenisContent: {
+    flex: 1,
+  },
   sheetTitleRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -392,86 +411,89 @@ const styles = StyleSheet.create({
   statusBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    alignSelf: 'flex-start',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
     borderRadius: 20,
-    marginBottom: 16,
-    gap: 6,
+    gap: 5,
+    marginLeft: 8,
   },
   statusDot: {
-    width: 7,
-    height: 7,
-    borderRadius: 4,
+    width: 6,
+    height: 6,
+    borderRadius: 3,
   },
   statusText: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '600',
   },
+  sheetScroll: {
+    flex: 1,
+  },
 
-  // Route
+  // Route — compact
   routeCard: {
     backgroundColor: '#F7FAFC',
     borderRadius: 14,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    marginBottom: 14,
+    marginBottom: 12,
   },
-  routeRow: {
+  routeCompact: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 8,
+    marginBottom: 10,
   },
-  routeIconCircle: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  routeConnector: {
-    marginLeft: 15,
-    height: 18,
-    borderLeftWidth: 2,
-    borderStyle: 'dashed',
-    marginVertical: 4,
-  },
-  routeLabel: {
-    fontSize: 11,
-    color: '#A0AEC0',
-    fontWeight: '500',
-    marginBottom: 1,
-  },
-  routeLocation: {
+  routeFrom: {
     fontSize: 14,
     fontWeight: '600',
     color: '#2D3748',
   },
+  routeTo: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#2D3748',
+  },
+  detailChips: {
+    flexDirection: 'row',
+    gap: 8,
+    flexWrap: 'wrap',
+  },
+  chip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#EDF2F7',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 20,
+    gap: 5,
+  },
+  chipText: {
+    fontSize: 12,
+    color: '#4A5568',
+  },
 
-  // Details
-  detailsRow: {
+  // Wat betekent dit voor jou
+  betekenisCard: {
+    backgroundColor: '#F0F7FF',
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 16,
+  },
+  betekenisHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F7FAFC',
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+    gap: 8,
+    marginBottom: 8,
   },
-  detailItem: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 7,
+  betekenisTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#2D3748',
   },
-  detailDivider: {
-    width: 1,
-    height: 20,
-    backgroundColor: '#E2E8F0',
-    marginHorizontal: 10,
-  },
-  detailText: {
+  betekenisText: {
     fontSize: 13,
     color: '#4A5568',
-    flexShrink: 1,
+    lineHeight: 20,
   },
 });

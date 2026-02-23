@@ -13,6 +13,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
+import { Image } from 'expo-image';
 
 type Message = {
   id: string;
@@ -57,7 +58,11 @@ function ChatBubble({ message }: { message: Message }) {
     >
       {!isUser && (
         <View style={styles.avatar}>
-          <MaterialIcons name="support-agent" size={22} color="#FFFFFF" />
+          <Image
+            source={require('../../public/cutedrone.png')}
+            style={styles.avatarImg}
+            contentFit="contain"
+          />
         </View>
       )}
       <View
@@ -132,7 +137,11 @@ export default function ChatScreen() {
       {/* Header */}
       <Animated.View entering={FadeInUp.duration(400)} style={styles.header}>
         <View style={styles.headerIcon}>
-          <MaterialIcons name="support-agent" size={28} color="#FFFFFF" />
+          <Image
+            source={require('../../public/cutedrone.png')}
+            style={styles.headerDroneImg}
+            contentFit="contain"
+          />
         </View>
         <View style={styles.headerText}>
           <Text style={styles.headerTitle}>Robo Hulplijn</Text>
@@ -218,9 +227,14 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#2E86DE',
+    backgroundColor: '#EBF4FF',
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'hidden',
+  },
+  headerDroneImg: {
+    width: 44,
+    height: 44,
   },
   headerText: {
     marginLeft: 14,
@@ -267,10 +281,15 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#2E86DE',
+    backgroundColor: '#EBF4FF',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 8,
+    overflow: 'hidden',
+  },
+  avatarImg: {
+    width: 26,
+    height: 26,
   },
   bubble: {
     maxWidth: '75%',
