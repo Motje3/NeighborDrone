@@ -12,10 +12,7 @@ import Animated, {
   withSpring,
   useSharedValue,
 } from 'react-native-reanimated';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { ComponentProps } from 'react';
-
-type IconName = ComponentProps<typeof Ionicons>['name'];
+import { Image } from 'expo-image';
 
 const SPRING_CONFIG = {
   damping: 16,
@@ -31,12 +28,20 @@ const BAR_INNER_WIDTH = SCREEN_WIDTH - BAR_MARGIN * 2 - BAR_H_PADDING * 2;
 const TAB_WIDTH = BAR_INNER_WIDTH / TAB_COUNT;
 const BUBBLE_WIDTH = 62;
 
-const TABS: { key: string; title: string; active: IconName; inactive: IconName }[] = [
-  { key: 'info', title: 'Info', active: 'information-circle', inactive: 'information-circle-outline' },
-  { key: 'chat', title: 'Chat', active: 'chatbubble-ellipses', inactive: 'chatbubble-ellipses-outline' },
-  { key: 'index', title: 'Kaart', active: 'map', inactive: 'map-outline' },
-  { key: 'report', title: 'Melden', active: 'warning', inactive: 'warning-outline' },
-  { key: 'notifications', title: 'Instellingen', active: 'settings', inactive: 'settings-outline' },
+const TAB_ICONS = {
+  info: require('../../public/drone.png'),
+  chat: require('../../public/chat.png'),
+  index: require('../../public/location.png'),
+  report: require('../../public/alert.png'),
+  notifications: require('../../public/setting.png'),
+};
+
+const TABS = [
+  { key: 'info', title: 'Info' },
+  { key: 'chat', title: 'Chat' },
+  { key: 'index', title: 'Kaart' },
+  { key: 'report', title: 'Melden' },
+  { key: 'notifications', title: 'Instellingen' },
 ];
 
 function getBubbleX(index: number) {
@@ -44,7 +49,6 @@ function getBubbleX(index: number) {
 }
 
 function MyTabBar({ state, navigation }: any) {
-  // Find which of our 5 visible tabs is active
   const activeRouteName = state.routes[state.index]?.name;
   const visibleIndex = TABS.findIndex((t) => t.key === activeRouteName);
   const safeIndex = visibleIndex >= 0 ? visibleIndex : 0;
@@ -62,10 +66,8 @@ function MyTabBar({ state, navigation }: any) {
   return (
     <View style={styles.barOuter}>
       <View style={styles.bar}>
-        {/* Sliding bubble */}
         <Animated.View style={[styles.bubble, bubbleAnimStyle]} />
 
-        {/* Tab buttons */}
         <View style={styles.tabsRow}>
           {TABS.map((tab, index) => {
             const isFocused = safeIndex === index;
@@ -79,10 +81,14 @@ function MyTabBar({ state, navigation }: any) {
                 }}
                 style={styles.tabButton}
               >
-                <Ionicons
-                  name={isFocused ? tab.active : tab.inactive}
-                  size={22}
-                  color={isFocused ? '#2E86DE' : '#A0AEC0'}
+                <Image
+                  source={TAB_ICONS[tab.key as keyof typeof TAB_ICONS]}
+                  style={[
+                    styles.tabIcon,
+                    { opacity: isFocused ? 1 : 0.4 },
+                  ]}
+                  contentFit="contain"
+                  tintColor={isFocused ? '#2E86DE' : '#A0AEC0'}
                 />
                 <Text
                   style={[
@@ -156,6 +162,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  tabIcon: {
+    width: 24,
+    height: 24,
   },
   tabLabel: {
     fontSize: 10,
