@@ -163,6 +163,7 @@ export default function MapScreen() {
               coordinate={drone.from}
               onPress={() => openSheet(drone)}
               anchor={{ x: 0.5, y: 0.5 }}
+              style={{ width: 60, height: 60 }}
             >
               <RNImage
                 source={require('../../public/mapdrone.png')}
@@ -288,8 +289,8 @@ const styles = StyleSheet.create({
 
   // Drone marker icon
   droneIcon: {
-    width: 40,
-    height: 40,
+    width: 60,
+    height: 60,
   },
 
   // Destination marker
